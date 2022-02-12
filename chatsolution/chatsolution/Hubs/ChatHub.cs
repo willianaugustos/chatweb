@@ -7,18 +7,20 @@ namespace chatsolution.Hubs
     public class ChatHub : Hub
     {
         IStockService stockService;
+        IConfiguration configuration;
 
         //constructor: inject dependencies
-        public ChatHub (IStockService StockService)
+        public ChatHub (IStockService StockService, IConfiguration Configuration)
         {
             this.stockService = StockService;
+            this.configuration = Configuration;
         }
 
         public async Task SendMessage(string username, string message)
         {
 
             //identify the message type
-            var msg = MessageFactory.Create(username, message, stockService);
+            var msg = MessageFactory.Create(username, message, stockService, configuration);
 
             //broadcast to all clients
             await BroadCastAllUsers(username, message);
@@ -29,22 +31,27 @@ namespace chatsolution.Hubs
                 //await msg.SaveToDatabase();
             }
 
-            //
             if (msg is CommandMessage)
             {
-                var commandMsg = ((CommandMessage)msg);
-
-                if (commandMsg.IsUnKnownCommand())
-                {
-                    await BroadCastAllUsers(ChatBotDefinitions.UserName, commandMsg.GetTextMessage());
-                }
-                else
-                {
-                    //is a recognized command, so execute:
-                    var resultado = await commandMsg.DoWorkAsync();
-                }
+                await ExecuteCommandMessage(msg);
             }
 
+        }
+
+        private async Task ExecuteCommandMessage(Message msg)
+        {
+            var commandMsg = ((CommandMessage)msg);
+
+            //if the command is unrecognized, then feedback immediately
+            if (commandMsg.IsUnKnownCommand())
+            {
+                await BroadCastAllUsers(ChatBotDefinitions.UserName, commandMsg.GetTextMessage());
+            }
+            else
+            {
+                //if is a recognized command, then execute:
+                var resultado = await commandMsg.DoWorkAsync();
+            }
         }
 
         private async Task BroadCastAllUsers(string username, string message)

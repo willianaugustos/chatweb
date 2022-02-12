@@ -5,12 +5,12 @@ namespace chatsolution.Core
     public abstract class MessageFactory
     {
 
-        public static Message Create(string username, string message, IStockService stockService)
+        public static Message Create(string username, string message, IStockService stockService, IConfiguration configuration)
         {
             Message msg;
             if (message.Trim().ToLower().StartsWith("/"))
             {
-                msg = new CommandMessage(username, message, stockService);
+                msg = new CommandMessage(username, message, stockService, configuration);
             }
             else
             {

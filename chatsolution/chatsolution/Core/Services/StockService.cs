@@ -3,16 +3,22 @@
     public class StockService : IStockService
     {
         IHttpClientFactory httpClient;
+        IConfiguration configuration;
+        private readonly string stooqUrl;
 
-        public StockService(IHttpClientFactory httpClient)
+        public StockService(IHttpClientFactory httpClient, IConfiguration Configuration)
         {
             this.httpClient = httpClient;
+            this.configuration = Configuration;
+
+            this.stooqUrl = this.configuration.GetValue<string>("StooqUrl");
         }
         public async Task<string> QueryByCodeAsync(string code)
         {
             var cli = this.httpClient.CreateClient();
             
-            var response = await cli.GetAsync($"https://stooq.com/q/l/?s={code}&f=sd2t2ohlcv&h&e=csv").ConfigureAwait(false);
+            //lookup at stooq service the information about that quote
+            var response = await cli.GetAsync(stooqUrl.Replace("{code}", code)).ConfigureAwait(false);
             return await response.Content.ReadAsStringAsync();
         }
     }

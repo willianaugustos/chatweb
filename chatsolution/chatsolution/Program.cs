@@ -8,6 +8,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IStockService, StockService>();
+
 builder.Services.AddHttpClient();
 
 

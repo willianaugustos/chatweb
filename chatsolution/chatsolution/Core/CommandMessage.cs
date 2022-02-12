@@ -15,7 +15,8 @@ namespace chatsolution.Core
         private const string stockCodeArgument = "stock_code";
         private const string stockCommandSample = $"{stockCommand}{stockCodeArgument}";
 
-        private IStockService StockService;
+        private IStockService stockService;
+        private IConfiguration configuration;
 
         private List<string> supportedCommands = new List<string>(){stockCommandSample};
 
@@ -23,9 +24,11 @@ namespace chatsolution.Core
         public Command Command { get; private set; }
         public Dictionary<string, string> Arguments { get; private set; }
 
-        public CommandMessage(string from, string message, IStockService StockService) : base(from, MessageContentType.CommandMessage)
+        public CommandMessage(string from, string message, IStockService StockService, IConfiguration Configuration) :
+            base(from, MessageContentType.CommandMessage)
         {
-            this.StockService = StockService;
+            this.stockService = StockService;
+            this.configuration = Configuration;
             this.Arguments = new Dictionary<string, string>();
             this.originalMessage = message;
             ParseArguments(message);
@@ -41,7 +44,7 @@ namespace chatsolution.Core
             {
                 case Command.StockQueryByCode:
                     string stockCode = this.Arguments[stockCodeArgument];
-                    var stockQueryResult = await this.StockService.QueryByCodeAsync(stockCode);
+                    var stockQueryResult = await this.stockService.QueryByCodeAsync(stockCode);
                     
                     var stockValue = GetStockPrice(stockQueryResult);
                     var info = GetStockInfoByValue(stockCode, stockValue);

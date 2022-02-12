@@ -1,0 +1,77 @@
+﻿@page
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div class="container">
+    <div id="userinfo" class="row">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" autocomplete="off" />
+        <button type="button" class="btn btn-block" onclick="setUserName();">Join</button>
+    </div>
+    <div id="messagearea" class="row" style="display: none">
+        <div>Joined as: <b><span id="display-username">Not Set</span></b></div>
+        <hr />
+        <div class="row">
+            <div class="col-6">
+                <ul id="messageList"></ul>
+            </div>
+        </div>
+        <hr />
+        <input type="text" id="message" autocomplete="off" />
+        <input type="button" id="sendButton" value="Send Message" />
+    </div>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script>
+    "use strict";
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+    var username="";
+
+    //Disable Send Button to stablish the connection
+    document.getElementById("sendButton").disabled = true;
+
+    connection.on("ReceiveMessage", function(user, message){
+        var msg = message;
+        var encodeMsg = user + ": " + msg;
+        var li = document.createElement("li");
+        li.textContent = encodeMsg;
+        document.getElementById("messageList").appendChild(li);
+    });
+
+    connection.start().then(function (){
+        document.getElementById("sendButton").disabled = false;
+    }).catch(function (err){
+        return console.error(err.toString());
+    });
+
+    document.getElementById("sendButton").addEventListener("click", function (event) {
+        var message = document.getElementById("message").value;
+        connection.invoke("SendMessage", username, message).then(function(){
+            document.getElementById("message").value = "";
+        }).catch(function (err){
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    });
+
+    function setUserName(){
+        var usernameinput = document.getElementById("username").value;
+        if (usernameinput === ""){
+            alert("The field User Name is required.");
+            return;
+        }
+
+        username = usernameinput;
+
+        //hide username div and show message panel.
+        document.getElementById("userinfo").style.display='none';
+        document.getElementById("messagearea").style.display='block';
+        document.getElementById("display-username").innerText=usernameinput;
+    }
+</script>

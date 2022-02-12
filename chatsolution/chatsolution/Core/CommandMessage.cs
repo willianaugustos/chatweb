@@ -28,22 +28,25 @@ namespace chatsolution.Core
             this.StockService = StockService;
             this.Arguments = new Dictionary<string, string>();
             this.originalMessage = message;
-            DetectAndfillArguments(message);
+            ParseArguments(message);
         }
 
-        public string DoWork()
+        /// <summary>
+        /// Execute the command
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> DoWorkAsync()
         {
             switch (this.Command)
             {
                 case Command.StockQueryByCode:
-                    string stock_code = this.Arguments[stockCodeArgument];
-                    var result = this.StockService.QueryByCodeAsync(stock_code);
-                    result.Wait();
-
+                    string stockCode = this.Arguments[stockCodeArgument];
+                    var stockQueryResult = await this.StockService.QueryByCodeAsync(stockCode);
                     
-                    var value = GetStockPrice(result.Result);
+                    var stockValue = GetStockPrice(stockQueryResult);
+                    var info = GetStockInfoByValue(stockCode, stockValue);
 
-                    return $"{stock_code} quote is {value} per share.";
+                    return info;
 
                 default:
                     break;
@@ -52,10 +55,21 @@ namespace chatsolution.Core
             return String.Empty;
         }
 
-        private string GetStockPrice(string result)
+        private string GetStockInfoByValue(string stockCode, string stockValue)
+        {
+            if (stockValue != "N/D")
+            {
+                return $"{stockCode} quote is {stockValue} per share.";
+            }
+            else
+                return $"No information is available about this quote: {stockCode}";
+        }
+
+        private string GetStockPrice(string stockInfo)
         {
             var regex = new Regex(@"\n(?:(?:[^,]+)\,){3}([^,]+)");
-            var match = regex.Match(result);
+            var match = regex.Match(stockInfo);
+
             if (match.Success)
             {
                 return match.Groups[1].Value;
@@ -76,26 +90,21 @@ namespace chatsolution.Core
         /// Returns a formatted string containing a text message to be sent to the chat
         /// </summary>
         /// <returns></returns>
-        public List<string> GetTextMessage()
+        public string GetTextMessage()
         {
             if (this.Command == Command.UnknownCommand)
             {
                 var supportedCommands = GetSupportedCommandsFormattedString();
-
-                var result = new List<string>()
-                { $"Command unknown ({this.originalMessage}). Try using one of the following supported commands:" };
-
-                result.AddRange(GetSupportedCommandsFormattedString());
-
-                return result;
+                
+                return $"Command unknown ({this.originalMessage}). Try using the following supported command: {GetSupportedCommandsFormattedString()}";
             }
             else
             {
-                return new List<string>() { "Command is in process, wait until it finishes." };
+                return "Command is in process, wait until it finishes.";
             }
         }
 
-        private void DetectAndfillArguments(string message)
+        private void ParseArguments(string message)
         {
             if (message.Trim().ToLower().StartsWith(stockCommand))
             { 
@@ -126,13 +135,13 @@ namespace chatsolution.Core
             return arr[1];
         }
 
-        private List<string> GetSupportedCommandsFormattedString()
+        private string GetSupportedCommandsFormattedString()
         {
-            var formattedStringList = new List<string>();
+            var formattedStringList = "";
 
             foreach (var item in this.supportedCommands)
             {
-                formattedStringList.Add($"- {item}{Environment.NewLine}"); 
+                formattedStringList += $"{item} ";
             }
 
             return formattedStringList;

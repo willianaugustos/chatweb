@@ -37,12 +37,19 @@
     document.getElementById("sendButton").disabled = true;
 
     connection.on("ReceiveMessage", function(user, message){
-        var msg = message;
-        var encodeMsg = user + ": " + msg;
+        var encodeMsg = user + ": " + message;
         var li = document.createElement("li");
         li.textContent = encodeMsg;
+        
         document.getElementById("messageList").appendChild(li);
     });
+
+    //connection.on("ReceiveMessageList", function(user, messages){
+    //    var encodeMsg = user + ": " + messages.join('\n');
+    //    var li = document.createElement("li");
+    //        li.textContent = encodeMsg;
+    //        document.getElementById("messageList").appendChild(li);
+    //}
 
     connection.start().then(function (){
         document.getElementById("sendButton").disabled = false;

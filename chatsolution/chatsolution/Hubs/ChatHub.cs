@@ -29,19 +29,19 @@ namespace chatsolution.Hubs
                 //await msg.SaveToDatabase();
             }
 
+            //
             if (msg is CommandMessage)
             {
-                var msgCommand = ((CommandMessage)msg);
+                var commandMsg = ((CommandMessage)msg);
 
-                if (msgCommand.IsUnKnownCommand())
+                if (commandMsg.IsUnKnownCommand())
                 {
-                    //BroadCastAllUsers(ChatBotDefinitions.UserName, msgCommand.GetTextMessage()[0]);
+                    await BroadCastAllUsers(ChatBotDefinitions.UserName, commandMsg.GetTextMessage());
                 }
                 else
                 {
-                    //var task = msgCommand.DoWork();
-                    //task.Wait();
-                    //BroadCastAllUsers("test", task.Result);
+                    //is a recognized command, so execute:
+                    var resultado = await commandMsg.DoWorkAsync();
                 }
             }
 

@@ -12,7 +12,8 @@
         {
             var cli = this.httpClient.CreateClient();
             
-            return await cli.GetStringAsync($"https://stooq.com/q/l/?s={code}&f=sd2t2ohlcv&h&e=csv").ConfigureAwait(false);
+            var response = await cli.GetAsync($"https://stooq.com/q/l/?s={code}&f=sd2t2ohlcv&h&e=csv").ConfigureAwait(false);
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }

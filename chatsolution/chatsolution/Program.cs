@@ -1,3 +1,4 @@
+using chatsolution.Core.Services;
 using chatsolution.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
+
+builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddHttpClient();
 
 
 var app = builder.Build();

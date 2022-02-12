@@ -6,4 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="Core\CommandMessage.cs" />
+    <Content Include="Core\IMessage.cs" />
+    <Content Include="Core\Message.cs" />
+    <Content Include="Core\MessageFactory.cs" />
+    <Content Include="Core\TextMessage.cs" />
+  </ItemGroup>
+
 </Project>

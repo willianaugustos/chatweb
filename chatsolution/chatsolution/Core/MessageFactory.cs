@@ -6,7 +6,7 @@ namespace chatsolution.Core
     {
 
         public static Message Create(string username, string message, IStockService stockService, IConfiguration configuration,
-            IQueueService queueService)
+            IQueuePublisherService queueService)
         {
             Message msg;
             if (message.Trim().ToLower().StartsWith("/"))

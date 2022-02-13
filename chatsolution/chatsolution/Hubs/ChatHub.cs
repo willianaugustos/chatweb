@@ -8,10 +8,10 @@ namespace chatsolution.Hubs
     {
         IStockService stockService;
         IConfiguration configuration;
-        IQueueService queueService;
+        IQueuePublisherService queueService;
 
         //constructor: inject dependencies
-        public ChatHub (IStockService StockService, IConfiguration Configuration, IQueueService queueservice)
+        public ChatHub (IStockService StockService, IConfiguration Configuration, IQueuePublisherService queueservice)
         {
             this.stockService = StockService;
             this.configuration = Configuration;

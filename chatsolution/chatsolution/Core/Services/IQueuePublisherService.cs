@@ -1,6 +1,6 @@
 ﻿namespace chatsolution.Core.Services
 {
-    public interface IQueueService
+    public interface IQueuePublisherService
     {
         void EnQueueMessage(TextMessage message);
     }

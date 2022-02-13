@@ -8,8 +8,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IStockService, StockService>();
-builder.Services.AddSingleton<IQueueService, QueueService>();
-//builder.Services.AddHostedService<QueueService>();
+builder.Services.AddSingleton<IQueuePublisherService, QueuePublisherService>();
+builder.Services.AddHostedService<QueueConsumerService>();
 
 builder.Services.AddHttpClient();
 

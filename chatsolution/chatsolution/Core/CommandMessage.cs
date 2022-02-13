@@ -17,7 +17,7 @@ namespace chatsolution.Core
 
         private IStockService stockService;
         private IConfiguration configuration;
-        private IQueueService queueService;
+        private IQueuePublisherService queueService;
 
         private List<string> supportedCommands = new List<string>(){stockCommandSample};
 
@@ -26,7 +26,7 @@ namespace chatsolution.Core
         public Dictionary<string, string> Arguments { get; private set; }
 
         public CommandMessage(string from, string message, IStockService StockService, IConfiguration Configuration,
-            IQueueService QueueService) :
+            IQueuePublisherService QueueService) :
             base(from, MessageContentType.CommandMessage)
         {
             this.stockService = StockService;

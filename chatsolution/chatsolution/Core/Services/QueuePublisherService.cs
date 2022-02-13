@@ -1,4 +1,6 @@
-﻿using RabbitMQ.Client;
+﻿using chatsolution.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
@@ -11,6 +13,7 @@ namespace chatsolution.Core.Services
         private readonly ILogger _logger;
         private IConnection? _connection;
         private IModel? _channel;
+        
 
         public QueuePublisherService(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
@@ -61,8 +64,8 @@ namespace chatsolution.Core.Services
 
         public void Dispose()
         {
-            _channel.Close();
-            _connection.Close();
+            _channel?.Close();
+            _connection?.Close();
         }
     }
 }

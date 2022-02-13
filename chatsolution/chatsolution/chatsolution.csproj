@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Core\IMessageHub.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Core\CommandMessage.cs" />
     <Content Include="Core\IMessage.cs" />
     <Content Include="Core\Message.cs" />

@@ -1,4 +1,6 @@
-﻿using RabbitMQ.Client;
+﻿using chatsolution.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 namespace chatsolution.Core.Services
@@ -10,12 +12,14 @@ namespace chatsolution.Core.Services
         private readonly ILogger _logger;
         private IConnection? _connection;
         private IModel? _channel;
+        IHubContext<ChatHub> chatHub;
 
-        public QueueConsumerService(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public QueueConsumerService(IConfiguration configuration, ILoggerFactory loggerFactory, IHubContext<ChatHub> chatHub)
         {
             this.configuration = configuration;
             this.serverAddress = configuration.GetValue<string>("rabbitmq-address");
             this._logger = loggerFactory.CreateLogger<QueuePublisherService>();
+            this.chatHub = chatHub;
 
             InitRabbitMQ();
         }
@@ -38,9 +42,11 @@ namespace chatsolution.Core.Services
             return Task.CompletedTask;
         }
 
-        private void HandleMessage(string content)
+        private async void HandleMessage(string content)
         {
             _logger.LogInformation($"Queue received << {content}");
+
+            await chatHub.Clients.All.SendAsync("ReceiveMessage", ChatBotDefinitions.UserName, content);
         }
 
         private void InitRabbitMQ()

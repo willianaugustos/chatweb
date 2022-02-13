@@ -11,6 +11,6 @@
 ``
 {
   "StooqUrl": "https://stooq.com/q/l/?s={code}&f=sd2t2ohlcv&h&e=csv",
-  "rabbitmq-connectionstring": ""
+  "rabbitmq-address": "localhost"
 }
 ``

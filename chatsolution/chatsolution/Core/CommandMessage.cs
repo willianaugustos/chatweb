@@ -17,6 +17,7 @@ namespace chatsolution.Core
 
         private IStockService stockService;
         private IConfiguration configuration;
+        private IQueueService queueService;
 
         private List<string> supportedCommands = new List<string>(){stockCommandSample};
 
@@ -24,13 +25,17 @@ namespace chatsolution.Core
         public Command Command { get; private set; }
         public Dictionary<string, string> Arguments { get; private set; }
 
-        public CommandMessage(string from, string message, IStockService StockService, IConfiguration Configuration) :
+        public CommandMessage(string from, string message, IStockService StockService, IConfiguration Configuration,
+            IQueueService QueueService) :
             base(from, MessageContentType.CommandMessage)
         {
             this.stockService = StockService;
             this.configuration = Configuration;
+            this.queueService = QueueService;
+
             this.Arguments = new Dictionary<string, string>();
             this.originalMessage = message;
+
             ParseArguments(message);
         }
 
@@ -48,6 +53,8 @@ namespace chatsolution.Core
                     
                     var stockValue = GetStockPrice(stockQueryResult);
                     var info = GetStockInfoByValue(stockCode, stockValue);
+
+                    this.queueService.EnQueueMessage(new TextMessage(ChatBotDefinitions.UserName, info));
 
                     return info;
 

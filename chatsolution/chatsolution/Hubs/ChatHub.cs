@@ -8,19 +8,21 @@ namespace chatsolution.Hubs
     {
         IStockService stockService;
         IConfiguration configuration;
+        IQueueService queueService;
 
         //constructor: inject dependencies
-        public ChatHub (IStockService StockService, IConfiguration Configuration)
+        public ChatHub (IStockService StockService, IConfiguration Configuration, IQueueService queueservice)
         {
             this.stockService = StockService;
             this.configuration = Configuration;
+            this.queueService = queueservice;
         }
 
         public async Task SendMessage(string username, string message)
         {
 
             //identify the message type
-            var msg = MessageFactory.Create(username, message, stockService, configuration);
+            var msg = MessageFactory.Create(username, message, stockService, configuration, queueService);
 
             //broadcast to all clients
             await BroadCastAllUsers(username, message);

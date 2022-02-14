@@ -61,6 +61,7 @@ namespace chatsolution.Hubs
 
         private async Task BroadCastAllUsers(string username, string message)
         {
+            message = DateTime.Now.ToString("HH:mm:ss") + " " + message;
             await Clients.All.SendAsync("ReceiveMessage", username, message);
         }
     }

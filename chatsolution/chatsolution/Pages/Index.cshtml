@@ -1,6 +1,6 @@
 ﻿@page
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Chat Home page";
 }
 
 <div class="text-center">
@@ -19,6 +19,7 @@
         <div class="row">
             <div class="col-6">
                 <ul id="messageList"></ul>
+
             </div>
         </div>
         <hr />
@@ -32,6 +33,7 @@
     "use strict";
     var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
     var username="";
+    var listLimit = 50;
 
     //Disable Send Button to stablish the connection
     document.getElementById("sendButton").disabled = true;
@@ -41,17 +43,17 @@
         var li = document.createElement("li");
         li.textContent = encodeMsg;
         
-        document.getElementById("messageList").appendChild(li);
+        var list = document.getElementById("messageList");
+        list.appendChild(li);
+        if (list.childNodes.length > listLimit)
+        {
+            while (list.childNodes.length > listLimit) {
+                list.removeChild(list.firstChild);
+            }
+        }
     });
 
-    //connection.on("ReceiveMessageList", function(user, messages){
-    //    var encodeMsg = user + ": " + messages.join('\n');
-    //    var li = document.createElement("li");
-    //        li.textContent = encodeMsg;
-    //        document.getElementById("messageList").appendChild(li);
-    //}
-
-    connection.start().then(function (){
+     connection.start().then(function (){
         document.getElementById("sendButton").disabled = false;
     }).catch(function (err){
         return console.error(err.toString());

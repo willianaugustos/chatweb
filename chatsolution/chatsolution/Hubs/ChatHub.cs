@@ -34,7 +34,7 @@ namespace chatsolution.Hubs
             //broadcast to all clients
             await BroadCastAllUsers(username, message);
 
-            if (msg is TextMessage)
+            if (msg.ShouldSaveToDatabase())
             {
                 //save to database
                 await this.messageRepository.SaveAsync((TextMessage)msg);
@@ -59,7 +59,7 @@ namespace chatsolution.Hubs
             else
             {
                 //if is a recognized command, then execute:
-                var resultado = await commandMsg.DoWorkAsync();
+                await commandMsg.DoWorkAsync();
             }
         }
 

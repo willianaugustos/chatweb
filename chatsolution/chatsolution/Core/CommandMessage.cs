@@ -162,5 +162,9 @@ namespace chatsolution.Core
             return formattedStringList;
         }
 
+        public override bool ShouldSaveToDatabase()
+        {
+            return false;
+        }
     }
 }

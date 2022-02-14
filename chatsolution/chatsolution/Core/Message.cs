@@ -15,6 +15,9 @@ namespace chatsolution.Core
             this.DateTime = dateTime;
         }
 
-        
+        public virtual bool ShouldSaveToDatabase()
+        {
+            return true;
+        }
     }
 }

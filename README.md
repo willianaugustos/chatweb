@@ -24,16 +24,33 @@ docker run -d -p15672:15672 -p5672:5672 --hostname my-rabbit --name rabbit rabbi
 }
 ```
 
+Please note the tag <span style="color:orange;">{code}</span> in the StooqUrl configuration.
+
+
 ## 3. Configure My SQL Environment
 
 ## 3.1 Run My SQL in a docker container
 ```
-docker run
+docker run --name some-mysql -p3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -d mysql:latest
 ```
 
 ### 3.2 Create the Database and Table for saving Messages
 
-Use the script: [#script.sql](/assets/script.sql)
+Use the script: [#script.sql](/assets/script.sql)\
+You can do it by using Mysql Workbench or other similar tool.
+
+In case you prefer do it by using by command lines, you have to use the following commands:
+
+### Inside container, open mysql command line
+```
+docker ps
+
+docker exec -it [container-id] bash
+
+mysql -u root -p
+```
+Now you can run SQL Commands directly on the container.
+
 
 ### 4. Run the application using visual studio or dotnet cli
 

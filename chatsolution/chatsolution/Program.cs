@@ -31,6 +31,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=History}/{action=Index}/{id?}");
 
 app.UseAuthorization();
 

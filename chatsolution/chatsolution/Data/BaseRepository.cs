@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace chatsolution.Data
 {
@@ -13,11 +14,13 @@ namespace chatsolution.Data
             this.Value = value;
         }
     }
-    public abstract class BaseRepository
+    public abstract class BaseRepository<T>
     {
         private MySqlConnection connection;
         private IConfiguration configuration;
         private readonly string connectionString;
+
+        
 
         public BaseRepository(IConfiguration configuration)
         {
@@ -40,6 +43,51 @@ namespace chatsolution.Data
 
             await command.ExecuteNonQueryAsync();
             connection.Close();
+        }
+
+        public async Task<DataTable> ExecuteDataTableAsync(string sql, params Parameter[] parameters)
+        {
+            connection.Open();
+
+            MySqlCommand command = connection.CreateCommand();
+            command.CommandText = sql;
+
+            foreach (var param in parameters)
+            {
+                command.Parameters.Add(new MySqlParameter(param.Name, param.Value));
+            }
+
+            var dataReader = await command.ExecuteReaderAsync();
+            var dataTable = new DataTable();
+            dataTable.Load(dataReader);
+
+            connection.Close();
+
+            return dataTable;
+        }
+
+        internal string ConvertToString(object value)
+        {
+            if (value.Equals(DBNull.Value) || value == null)
+            {
+                return String.Empty;
+            }
+            else
+            {
+                return value.ToString();
+            }
+        }
+
+        internal DateTime ConvertToDateTime(object value)
+        {
+            if (value.Equals(DBNull.Value) || value == null)
+            {
+                return DateTime.MinValue;
+            }
+            else
+            {
+                return Convert.ToDateTime(value);
+            }
         }
     }
 }

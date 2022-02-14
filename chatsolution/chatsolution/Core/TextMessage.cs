@@ -4,15 +4,10 @@ namespace chatsolution.Core
 {
     public class TextMessage : Message
     {
-        private IMessageRepository messageRepository;
-        public TextMessage(string from, string message, IMessageRepository messageRepository) : base(from, message)
+        public TextMessage(string from, string message, DateTime dateTime) :
+            base(from, message, dateTime)
         {
-            this.messageRepository = messageRepository;
-        }
-
-        public async Task SaveToDatabaseAsync()
-        {
-            await this.messageRepository.SaveAsync(this);
+            
         }
     }
 }

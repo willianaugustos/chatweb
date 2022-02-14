@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-6">
                 <ul id="messageList"></ul>
-
+                
             </div>
         </div>
         <hr />
@@ -82,5 +82,17 @@
         document.getElementById("userinfo").style.display='none';
         document.getElementById("messagearea").style.display='block';
         document.getElementById("display-username").innerText=usernameinput;
+
+        //recover the message history
+        //var data = await fetchAsync("/api/history");
+        //data.forEach(record => console.log(record.From));
+
+        //fetch('/api/history').then(res => res.json()).then(json => console.log(json));
+    }
+
+    async function fetchAsync (url) {
+        let response = await fetch(url);
+        let data = await response.json();
+        return data;
     }
 </script>

@@ -25,7 +25,7 @@ namespace chatsolution.Hubs
         {
 
             //identify the message type
-            var msg = MessageFactory.Create(username, message, stockService, configuration, queueService, messageRepository);
+            var msg = MessageFactory.Create(username, message, DateTime.Now, stockService, configuration, queueService);
 
             //broadcast to all clients
             await BroadCastAllUsers(username, message);
@@ -33,7 +33,7 @@ namespace chatsolution.Hubs
             if (msg is TextMessage)
             {
                 //save to database
-                await ((TextMessage)msg).SaveToDatabaseAsync();
+                await this.messageRepository.SaveAsync((TextMessage)msg);
             }
 
             if (msg is CommandMessage)
@@ -61,7 +61,7 @@ namespace chatsolution.Hubs
 
         private async Task BroadCastAllUsers(string username, string message)
         {
-            message = DateTime.Now.ToString("HH:mm:ss") + " " + message;
+            message = $"({DateTime.Now.ToString("HH:mm:ss")}) {message}";
             await Clients.All.SendAsync("ReceiveMessage", username, message);
         }
     }

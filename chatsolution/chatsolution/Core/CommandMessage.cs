@@ -19,6 +19,7 @@ namespace chatsolution.Core
         private IStockService stockService;
         private IConfiguration configuration;
         private IQueuePublisherService queueService;
+        private readonly ILogger _logger;
 
         private List<string> supportedCommands = new List<string>(){stockCommandSample};
 
@@ -27,12 +28,13 @@ namespace chatsolution.Core
         public Dictionary<string, string> Arguments { get; private set; }
 
         public CommandMessage(string from, string message, DateTime dateTime, IStockService StockService, IConfiguration Configuration,
-            IQueuePublisherService QueueService) :
+            IQueuePublisherService QueueService, ILogger logger) :
             base(from, message, dateTime)
         {
             this.stockService = StockService;
             this.configuration = Configuration;
             this.queueService = QueueService;
+            this._logger = logger;
 
             this.Arguments = new Dictionary<string, string>();
             this.originalMessage = message;
@@ -51,7 +53,9 @@ namespace chatsolution.Core
                 case Command.StockQueryByCode:
                     string stockCode = this.Arguments[stockCodeArgument];
                     var stockQueryResult = await this.stockService.QueryByCodeAsync(stockCode);
-                    
+
+                    _logger.LogInformation($"Result obtained from Stooq >> {stockQueryResult}");
+
                     var stockValue = GetStockPrice(stockQueryResult);
                     var info = GetStockInfoByValue(stockCode, stockValue);
 

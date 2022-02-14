@@ -38,7 +38,9 @@
     //Disable Send Button to stablish the connection
     document.getElementById("sendButton").disabled = true;
 
-    connection.on("ReceiveMessage", function(user, message){
+    connection.on("ReceiveMessage", (user, message) => receiveMessage(user, message));
+    
+    function receiveMessage(user, message) {
         var encodeMsg = user + ": " + message;
         var li = document.createElement("li");
         li.textContent = encodeMsg;
@@ -51,7 +53,7 @@
                 list.removeChild(list.firstChild);
             }
         }
-    });
+    };
 
      connection.start().then(function (){
         document.getElementById("sendButton").disabled = false;
@@ -87,12 +89,14 @@
         //var data = await fetchAsync("/api/history");
         //data.forEach(record => console.log(record.From));
 
-        //fetch('/api/history').then(res => res.json()).then(json => console.log(json));
+        fetch('/api/history').then(res => res.json()).then(
+            data => data.forEach( (item) => receiveMessage(item.userName, item.message))
+            );
     }
 
-    async function fetchAsync (url) {
-        let response = await fetch(url);
-        let data = await response.json();
-        return data;
-    }
+    //async function fetchAsync (url) {
+    //    let response = await fetch(url);
+    //    let data = await response.json();
+    //    return data;
+    //}
 </script>

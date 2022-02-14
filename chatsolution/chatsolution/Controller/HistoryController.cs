@@ -19,7 +19,7 @@ namespace chatsolution.Controller
         {
             var history = await this.messageRepository.QueryLastMessages(50);
             var historyModelList = history.ConvertAll(r => new HistoryModel(r.From, r.DateTime, r.Text));
-            return historyModelList;
+            return Enumerable.Reverse(historyModelList).ToList();
         }
     }
 }

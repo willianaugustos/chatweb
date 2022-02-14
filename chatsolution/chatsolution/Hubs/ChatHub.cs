@@ -11,21 +11,25 @@ namespace chatsolution.Hubs
         IConfiguration configuration;
         IQueuePublisherService queueService;
         IMessageRepository messageRepository;
+        private readonly ILogger _logger;
 
         //constructor: inject dependencies
-        public ChatHub (IStockService StockService, IConfiguration Configuration, IQueuePublisherService queueservice, IMessageRepository messageRepository)
+        public ChatHub (IStockService StockService, IConfiguration Configuration, IQueuePublisherService queueservice, 
+            IMessageRepository messageRepository,
+            ILoggerFactory loggerFactory)
         {
             this.stockService = StockService;
             this.configuration = Configuration;
             this.queueService = queueservice;
             this.messageRepository = messageRepository;
+            this._logger = loggerFactory.CreateLogger<QueuePublisherService>();
         }
 
         public async Task SendMessage(string username, string message)
         {
 
             //identify the message type
-            var msg = MessageFactory.Create(username, message, DateTime.Now, stockService, configuration, queueService);
+            var msg = MessageFactory.Create(username, message, DateTime.Now, stockService, configuration, queueService, _logger);
 
             //broadcast to all clients
             await BroadCastAllUsers(username, message);

@@ -7,12 +7,13 @@ namespace chatsolution.Core
     {
 
         public static Message Create(string username, string message, DateTime dateTime, IStockService stockService, IConfiguration configuration,
-            IQueuePublisherService queueService)
+            IQueuePublisherService queueService,
+            ILogger logger)
         {
             Message msg;
             if (message.Trim().ToLower().StartsWith("/"))
             {
-                msg = new CommandMessage(username, message, dateTime, stockService, configuration, queueService);
+                msg = new CommandMessage(username, message, dateTime, stockService, configuration, queueService, logger);
             }
             else
             {

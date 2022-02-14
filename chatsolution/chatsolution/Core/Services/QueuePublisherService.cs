@@ -24,7 +24,7 @@ namespace chatsolution.Core.Services
             InitRabbitMQ();
         }
 
-        public void EnQueueMessage(TextMessage message)
+        public void EnQueueMessage(Message message)
         {
 
                 var body = Encoding.UTF8.GetBytes(message.Text);

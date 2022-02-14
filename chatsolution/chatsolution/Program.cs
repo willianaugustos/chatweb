@@ -1,4 +1,5 @@
 using chatsolution.Core.Services;
+using chatsolution.Data;
 using chatsolution.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,8 @@ builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddSingleton<IQueuePublisherService, QueuePublisherService>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
 builder.Services.AddHostedService<QueueConsumerService>();
 
 builder.Services.AddHttpClient();

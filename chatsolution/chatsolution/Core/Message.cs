@@ -1,23 +1,19 @@
-﻿namespace chatsolution.Core
-{
-    public enum MessageContentType
-    {
-        TextMessage = 0,
-        CommandMessage = 1,
-    }
+﻿using chatsolution.Data;
 
+namespace chatsolution.Core
+{
     public abstract class Message
     {
+
         public string From { get; private set; }
+        public string Text{ get; private set; }
 
-        public Guid Id { get; private set; }
-
-        public MessageContentType ContentType { get; private set; }
-
-        public Message(string From, MessageContentType Type)
+        public Message(string From, string Text)
         {
             this.From = From;
-            this.ContentType = Type;
+            this.Text = Text;
         }
+
+        
     }
 }

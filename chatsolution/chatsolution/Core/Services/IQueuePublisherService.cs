@@ -2,6 +2,6 @@
 {
     public interface IQueuePublisherService
     {
-        void EnQueueMessage(TextMessage message);
+        void EnQueueMessage(Message message);
     }
 }

@@ -1,12 +1,18 @@
-﻿namespace chatsolution.Core
+﻿using chatsolution.Data;
+
+namespace chatsolution.Core
 {
     public class TextMessage : Message
     {
-        public string Text { get; private set; }
-
-        public TextMessage(string From, string Text) : base(From, MessageContentType.TextMessage)
+        private IMessageRepository messageRepository;
+        public TextMessage(string from, string message, IMessageRepository messageRepository) : base(from, message)
         {
-            this.Text = Text;
+            this.messageRepository = messageRepository;
+        }
+
+        public async Task SaveToDatabaseAsync()
+        {
+            await this.messageRepository.SaveAsync(this);
         }
     }
 }

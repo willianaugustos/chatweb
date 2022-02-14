@@ -1,5 +1,6 @@
 ﻿using chatsolution.Core;
 using chatsolution.Core.Services;
+using chatsolution.Data;
 using Microsoft.AspNetCore.SignalR;
 
 namespace chatsolution.Hubs
@@ -9,20 +10,22 @@ namespace chatsolution.Hubs
         IStockService stockService;
         IConfiguration configuration;
         IQueuePublisherService queueService;
+        IMessageRepository messageRepository;
 
         //constructor: inject dependencies
-        public ChatHub (IStockService StockService, IConfiguration Configuration, IQueuePublisherService queueservice)
+        public ChatHub (IStockService StockService, IConfiguration Configuration, IQueuePublisherService queueservice, IMessageRepository messageRepository)
         {
             this.stockService = StockService;
             this.configuration = Configuration;
             this.queueService = queueservice;
+            this.messageRepository = messageRepository;
         }
 
         public async Task SendMessage(string username, string message)
         {
 
             //identify the message type
-            var msg = MessageFactory.Create(username, message, stockService, configuration, queueService);
+            var msg = MessageFactory.Create(username, message, stockService, configuration, queueService, messageRepository);
 
             //broadcast to all clients
             await BroadCastAllUsers(username, message);
@@ -30,7 +33,7 @@ namespace chatsolution.Hubs
             if (msg is TextMessage)
             {
                 //save to database
-                //await msg.SaveToDatabase();
+                await ((TextMessage)msg).SaveToDatabaseAsync();
             }
 
             if (msg is CommandMessage)

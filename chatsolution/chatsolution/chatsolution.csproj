@@ -16,10 +16,10 @@
     <Content Include="Core\IMessage.cs" />
     <Content Include="Core\Message.cs" />
     <Content Include="Core\MessageFactory.cs" />
-    <Content Include="Core\TextMessage.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.28" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.3" />
   </ItemGroup>
 

@@ -22,6 +22,5 @@ namespace chatsolution.Core
             return msg;
         }
 
-        
     }
 }

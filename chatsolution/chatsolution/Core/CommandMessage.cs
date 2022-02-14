@@ -69,7 +69,7 @@ namespace chatsolution.Core
 
             return String.Empty;
         }
-
+         
         private string GetStockInfoByValue(string stockCode, string stockValue)
         {
             if (stockValue != "N/D")

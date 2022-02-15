@@ -85,18 +85,9 @@
         document.getElementById("messagearea").style.display='block';
         document.getElementById("display-username").innerText=usernameinput;
 
-        //recover the message history
-        //var data = await fetchAsync("/api/history");
-        //data.forEach(record => console.log(record.From));
-
         fetch('/api/history').then(res => res.json()).then(
             data => data.forEach( (item) => receiveMessage(item.userName, item.message))
             );
     }
 
-    //async function fetchAsync (url) {
-    //    let response = await fetch(url);
-    //    let data = await response.json();
-    //    return data;
-    //}
 </script>
